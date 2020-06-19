@@ -1,7 +1,7 @@
 name: flutter_install_apk_silently
-description: A new Flutter plugin.
-version: 0.1.0
-homepage:
+description: Flutter plugin to help in install APK silently on Android devices which are rooted or have custom ROM.
+version: 0.1.0+1
+homepage: https://github.com/ShadyBoshra2012/flutter_install_apk_silently
 
 environment:
   sdk: ">=2.7.0 <3.0.0"

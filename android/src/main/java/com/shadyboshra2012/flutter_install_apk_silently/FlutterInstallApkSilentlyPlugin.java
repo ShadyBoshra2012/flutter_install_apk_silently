@@ -25,10 +25,6 @@ public class FlutterInstallApkSilentlyPlugin implements FlutterPlugin, MethodCal
     /// Methods name which detect which it called from Flutter.
     private static final String METHOD_INSTALL_APK = "installAPK";
 
-    /// Error codes returned to Flutter if there's an error.
-    private static final String INSTALL_APK_ERROR = "400";
-    private static final String FILE_NOT_FOUND_ERROR = "404";
-
     /// The MethodChannel that will the communication between Flutter and native Android
     ///
     /// This local reference serves to register the plugin with the Flutter Engine and unregister it
@@ -59,36 +55,8 @@ public class FlutterInstallApkSilentlyPlugin implements FlutterPlugin, MethodCal
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         switch (call.method) {
             case METHOD_INSTALL_APK:
-                try {
-                    // Get the args from Flutter.
-                    String filePath = call.argument("filePath");
-
-                    File file = new File(filePath);
-                    // Check if file is exist.
-                    if (file.exists()) {
-                        String command = "pm install  '" + filePath + "'";
-                        Process process = Runtime.getRuntime().exec(new String[]{"su", "-c", command});
-                        // Run command.
-                        process.waitFor();
-                        // Check the result of the process.
-                        if (process.exitValue() == 0) {
-                            // Return true for a success.
-                            result.success(true);
-                        } else {
-                            // Failed to be installed.
-                            // Error in installing.
-                            String errorDetails = convertStreamToString(process.getErrorStream());
-                            result.error(process.exitValue() + "", "Failed to install", errorDetails);
-                        }
-                    } else {
-                        // Failed to be installed.
-                        // File not found.
-                        result.error(FILE_NOT_FOUND_ERROR, "Failed to install", "File not found.");
-                    }
-                } catch (Exception ex) {
-                    // Return an error.
-                    result.error(INSTALL_APK_ERROR, ex.getMessage(), ex.getLocalizedMessage());
-                }
+                // Working in backgrount AsyncTask.
+                new InstallingTask(result, call).execute();
                 break;
             default:
                 result.notImplemented();
@@ -99,26 +67,5 @@ public class FlutterInstallApkSilentlyPlugin implements FlutterPlugin, MethodCal
     @Override
     public void onDetachedFromEngine(@NonNull FlutterPluginBinding binding) {
         channel.setMethodCallHandler(null);
-    }
-
-    private String convertStreamToString(InputStream is) {
-        BufferedReader reader = new BufferedReader(new InputStreamReader(is));
-        StringBuilder sb = new StringBuilder();
-
-        String line = null;
-        try {
-            while ((line = reader.readLine()) != null) {
-                sb.append(line).append('\n');
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            try {
-                is.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return sb.toString();
     }
 }

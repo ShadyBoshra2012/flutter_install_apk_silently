@@ -42,7 +42,7 @@ Then you can download APK from internet or use one from device storage as file, 
 
 > Please see example.
 
-```
+```dart
 bool result = await FlutterInstallApkSilently.installAPK(file: file);
 ```
 

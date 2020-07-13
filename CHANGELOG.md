@@ -1,3 +1,7 @@
+## 0.1.1+1
+
+* Typing README file.
+
 ## 0.1.1
 
 * Installing without blocking UI.

@@ -1,12 +1,10 @@
 package com.shadyboshra2012.flutter_install_apk_silently;
 
-import androidx.annotation.NonNull;
+import android.annotation.SuppressLint;
+import android.content.Context;
+import android.os.PowerManager;
 
-import java.io.BufferedReader;
-import java.io.File;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import androidx.annotation.NonNull;
 
 import io.flutter.embedding.engine.plugins.FlutterPlugin;
 import io.flutter.plugin.common.MethodCall;
@@ -24,6 +22,7 @@ public class FlutterInstallApkSilentlyPlugin implements FlutterPlugin, MethodCal
 
     /// Methods name which detect which it called from Flutter.
     private static final String METHOD_INSTALL_APK = "installAPK";
+    private static final String METHOD_REBOOT_DEVICE = "rebootDevice";
 
     /// The MethodChannel that will the communication between Flutter and native Android
     ///
@@ -31,10 +30,15 @@ public class FlutterInstallApkSilentlyPlugin implements FlutterPlugin, MethodCal
     /// when the Flutter Engine is detached from the Activity
     private MethodChannel channel;
 
+    /// Context to hold it for Reboot needs.
+    @SuppressLint("StaticFieldLeak")
+    private static Context context;
+
     @Override
     public void onAttachedToEngine(@NonNull FlutterPluginBinding flutterPluginBinding) {
         channel = new MethodChannel(flutterPluginBinding.getFlutterEngine().getDartExecutor(), CHANNEL_NAME);
         channel.setMethodCallHandler(this);
+        context = flutterPluginBinding.getApplicationContext();
     }
 
     // This static function is optional and equivalent to onAttachedToEngine. It supports the old
@@ -55,8 +59,19 @@ public class FlutterInstallApkSilentlyPlugin implements FlutterPlugin, MethodCal
     public void onMethodCall(@NonNull MethodCall call, @NonNull Result result) {
         switch (call.method) {
             case METHOD_INSTALL_APK:
-                // Working in backgrount AsyncTask.
+                // Working in background AsyncTask.
                 new InstallingTask(result, call).execute();
+                break;
+            case METHOD_REBOOT_DEVICE:
+                try {
+                    PowerManager pm = (PowerManager) context.getSystemService(Context.POWER_SERVICE);
+                    assert pm != null;
+                    pm.reboot(null);
+                    result.success(true);
+                } catch (Exception ex) {
+                    // Return an error.
+                    result.error("0",  ex.getMessage(), ex.getLocalizedMessage());
+                }
                 break;
             default:
                 result.notImplemented();

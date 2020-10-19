@@ -1,7 +1,7 @@
 package com.shadyboshra2012.flutter_install_apk_silently;
 
 public class InstallingResult {
-    private boolean isSuccess;
+    private final boolean isSuccess;
     private String error;
     private String errorMessage;
     private String errorDetails;

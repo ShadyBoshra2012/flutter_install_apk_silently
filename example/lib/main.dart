@@ -38,8 +38,7 @@ class _MyAppState extends State<MyApp> {
                 });
 
                 var tempDir = await getTemporaryDirectory();
-                String fullPath = tempDir.path +
-                    "/app_${DateTime.now().millisecondsSinceEpoch}.apk";
+                String fullPath = tempDir.path + "/app_${DateTime.now().millisecondsSinceEpoch}.apk";
                 print('full path $fullPath');
 
                 Dio dio = Dio();
@@ -48,8 +47,7 @@ class _MyAppState extends State<MyApp> {
                 File file = File(fullPath);
 
                 Future.delayed(Duration(seconds: 1), () async {
-                  FlutterInstallApkSilently.installAPK(file: file)
-                      .then((isInstalled) {
+                  FlutterInstallApkSilently.installAPK(file: file).then((isInstalled) {
                     if (isInstalled)
                       setState(() {
                         _status = "success";
@@ -63,21 +61,18 @@ class _MyAppState extends State<MyApp> {
                   }).catchError((onError) => print(onError));
                 });
               },
-              child: Text("Download from Internet",
-                  style: TextStyle(fontSize: 24.0)),
+              child: Text("Download from Internet", style: TextStyle(fontSize: 24.0)),
             ),
             RaisedButton(
               onPressed: () async {
-                File file = await FilePicker.getFile(
-                    type: FileType.custom, allowedExtensions: ['apk']);
+                File file = await FilePicker.getFile(type: FileType.custom, allowedExtensions: ['apk']);
 
                 setState(() {
                   _status = "loading";
                   _message = "Waiting to be installed.";
                 });
                 Future.delayed(Duration(seconds: 1), () async {
-                  FlutterInstallApkSilently.installAPK(file: file)
-                      .then((isInstalled) {
+                  FlutterInstallApkSilently.installAPK(file: file).then((isInstalled) {
                     if (isInstalled)
                       setState(() {
                         _status = "success";
@@ -96,15 +91,17 @@ class _MyAppState extends State<MyApp> {
             (_status == "loading")
                 ? Center(child: CircularProgressIndicator())
                 : (_status == "success")
-                    ? Center(
-                        child:
-                            Icon(Icons.check, color: Colors.green, size: 35.0))
+                    ? Center(child: Icon(Icons.check, color: Colors.green, size: 35.0))
                     : (_status == "failed")
-                        ? Center(
-                            child: Icon(Icons.clear,
-                                color: Colors.red, size: 35.0))
+                        ? Center(child: Icon(Icons.clear, color: Colors.red, size: 35.0))
                         : Container(),
-            Text("$_message", style: TextStyle(fontSize: 24.0))
+            Text("$_message", style: TextStyle(fontSize: 24.0)),
+            RaisedButton(
+              onPressed: () async {
+                await FlutterInstallApkSilently.rebootDevice();
+              },
+              child: Text("Reboot device", style: TextStyle(fontSize: 24.0)),
+            ),
           ],
         ),
       ),

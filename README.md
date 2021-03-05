@@ -12,7 +12,7 @@ Add this to your package's `pubspec.yaml` file:
 
 ```yaml
 dependencies:
-  flutter_install_apk_silently: ^0.1.2
+  flutter_install_apk_silently: ^0.2.0
 ```
 
 ### Android
@@ -32,7 +32,7 @@ Or you can root you real device and make your Custom Rom.
 
 ## Usage
 
-# Install APK
+### Install APK
 
 You just have to import the package with
 
@@ -50,7 +50,7 @@ bool result = await FlutterInstallApkSilently.installAPK(file: file);
 
 The method will return a boolean with the status of installation. And if it fails you can catch the error.
 
-# Reboot Device
+### Reboot Device
 
 This method helps to reboot your device, you should check your permissions in manifest.
 
@@ -60,7 +60,7 @@ bool result = await FlutterInstallApkSilently.rebootDevice();
 
 ## Links
 
-This plugin is mainly developed for [GRANDTK](http://grandtk.com/) company.
+This plugin is mainly developed for [GRANDTK](https://grandtk.com/) company.
 
 ## Issues or Contributions
 
@@ -68,7 +68,7 @@ This is a beta version of plugin, so I am very appreciated for any issues or con
 
 ## License
 
-MIT: [http://mit-license.org](http://mit-license.org). 
+MIT: [https://mit-license.org](https://mit-license.org). 
 
 Copyright (c) 2019 Shady Boshra. All rights reserved.
 

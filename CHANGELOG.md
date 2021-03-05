@@ -1,3 +1,7 @@
+## 0.2.0
+
+* Migrated Null-Safety.
+
 ## 0.1.2
 
 * Add rebootDevice function.
